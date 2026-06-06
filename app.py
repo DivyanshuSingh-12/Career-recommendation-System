@@ -17,7 +17,7 @@ from reportlab.platypus import (
 )
 from reportlab.lib.styles import getSampleStyleSheet
 
-st.set_page_config(page_title="Career Recommendation", page_icon="🎯", layout="wide")
+st.set_page_config(page_title="Career Recommendation", layout="wide")
 
 BUNDLE_PATH = Path("saved_models") / "career_streamlit_bundle.pkl"
 EDU_PATH = Path("Dataset") / "career_dataset_large.xlsx"
@@ -189,7 +189,6 @@ def randomize_form_state(stats, education_opts, specialization_opts, cert_opts, 
         sample_size = min(len(skill_opts), random.randint(1, min(3, len(skill_opts))))
         st.session_state.selected_skills = random.sample(skill_opts, sample_size)
 
-# Replace your entire create_pdf_report() function with this version
 
 def create_pdf_report(
     top_career,
@@ -201,6 +200,7 @@ def create_pdf_report(
     certifications,
     cgpa,
     selected_skills,
+    career_path=None,
     alt_df=None,
     top_factors_df=None,
     bg_df=None,
@@ -246,7 +246,16 @@ def create_pdf_report(
         )
 
     content.append(Spacer(1, 15))
+    
 
+    if career_path:
+        content.append(Spacer(1, 15))
+        content.append(Paragraph("Career Progression Path", styles["Heading2"]))
+        content.append(
+            Paragraph(
+                " -> ".join(career_path),
+                styles["Normal"]
+    ))
     # =========================
     # EDUCATION DETAILS
     # =========================
@@ -332,16 +341,66 @@ def create_pdf_report(
                     styles["Normal"]
                 )
             )
-
-   
-
     doc.build(content)
-
     buffer.seek(0)
-
     return buffer
 
 def main():
+    hierarchy = {
+    "Business & Marketing": [
+        "Sales Assistant",
+        "Marketing Executive",
+        "Account Manager",
+        "Marketing Manager",
+        "Director",
+        "CEO"
+    ],
+
+    "Software Development": [
+        "Junior Developer",
+        "Software Developer",
+        "Senior Developer",
+        "Tech Lead",
+        "Engineering Manager",
+        "CTO"
+    ],
+
+    "Data Science & AI": [
+        "Data Analyst",
+        "Data Scientist",
+        "Senior Data Scientist",
+        "AI Engineer",
+        "AI Architect",
+        "Chief AI Officer"
+    ],
+
+    "Accounting & Finance": [
+        "Accounts Assistant",
+        "Accountant",
+        "Senior Accountant",
+        "Finance Manager",
+        "Finance Director",
+        "CFO"
+    ],
+
+    "Healthcare": [
+        "Medical Assistant",
+        "Healthcare Professional",
+        "Senior Specialist",
+        "Department Head",
+        "Medical Director",
+        "Chief Medical Officer"
+    ],
+
+    "Education & Counseling": [
+        "Teaching Assistant",
+        "Teacher",
+        "Senior Teacher",
+        "Academic Coordinator",
+        "Principal",
+        "Education Director"
+       ]
+    }
     st.title("Career Recommendation System")
     st.markdown("""
         <p style="font-size:18px;">
@@ -515,7 +574,14 @@ def main():
         m2.metric("Suitability Score", f"{suitability:.2f}%")
         m3.metric("Success Probability", f"{success_prob:.2f}%")
 
+        st.markdown("### Career Progression Path")
 
+        path = hierarchy.get(top_career, [])
+
+        if path:
+            st.success(" -> ".join(path))
+        else:
+            st.info("Career progression path not available.")
         alt_df = None
         top_factors_df = None
         bg_df = None
@@ -611,6 +677,7 @@ def main():
             certifications=certifications,
             cgpa=cgpa,
             selected_skills=selected_skills,
+            career_path=path,
             alt_df=alt_df,
             top_factors_df=top_factors_df,
             bg_df=bg_df,
