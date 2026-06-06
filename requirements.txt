@@ -6,4 +6,5 @@ scikit-learn
 shap
 openpyxl
 joblib
-
+seaborn
+reportlab
