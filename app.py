@@ -1,5 +1,6 @@
 import random
 from pathlib import Path
+from io import BytesIO
 
 import numpy as np
 import pandas as pd
@@ -7,7 +8,14 @@ import streamlit as st
 import joblib
 import shap
 import matplotlib.pyplot as plt
-
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    Image,
+    PageBreak
+)
+from reportlab.lib.styles import getSampleStyleSheet
 
 st.set_page_config(page_title="Career Recommendation", page_icon="🎯", layout="wide")
 
@@ -181,10 +189,166 @@ def randomize_form_state(stats, education_opts, specialization_opts, cert_opts, 
         sample_size = min(len(skill_opts), random.randint(1, min(3, len(skill_opts))))
         st.session_state.selected_skills = random.sample(skill_opts, sample_size)
 
+# Replace your entire create_pdf_report() function with this version
+
+def create_pdf_report(
+    top_career,
+    suitability,
+    success_prob,
+    user_inputs,
+    education_level,
+    specialization,
+    certifications,
+    cgpa,
+    selected_skills,
+    alt_df=None,
+    top_factors_df=None,
+    bg_df=None,
+):
+    buffer = BytesIO()
+
+    doc = SimpleDocTemplate(buffer)
+    styles = getSampleStyleSheet()
+
+    content = []
+
+    # =========================
+    # RESULT SUMMARY
+    # =========================
+    content.append(Paragraph("Career Recommendation Report", styles["Title"]))
+    content.append(Spacer(1, 12))
+
+    content.append(Paragraph(
+        f"<b>Recommended Career:</b> {top_career}",
+        styles["Normal"]
+    ))
+
+    content.append(Paragraph(
+        f"<b>Suitability Score:</b> {suitability:.2f}%",
+        styles["Normal"]
+    ))
+
+    content.append(Paragraph(
+        f"<b>Success Probability:</b> {success_prob:.2f}%",
+        styles["Normal"]
+    ))
+
+    content.append(Spacer(1, 15))
+
+    # =========================
+    # USER INPUTS
+    # =========================
+    content.append(Paragraph("User Inputs", styles["Heading2"]))
+
+    for key, value in user_inputs.items():
+        content.append(
+            Paragraph(f"{key}: {value}", styles["Normal"])
+        )
+
+    content.append(Spacer(1, 15))
+
+    # =========================
+    # EDUCATION DETAILS
+    # =========================
+    content.append(Paragraph("Education Details", styles["Heading2"]))
+
+    content.append(Paragraph(
+        f"Education Level: {education_level}",
+        styles["Normal"]
+    ))
+
+    content.append(Paragraph(
+        f"Specialization: {specialization}",
+        styles["Normal"]
+    ))
+
+    content.append(Paragraph(
+        f"Certifications: {certifications}",
+        styles["Normal"]
+    ))
+
+    content.append(Paragraph(
+        f"CGPA/Percentage: {cgpa}",
+        styles["Normal"]
+    ))
+
+    content.append(Paragraph(
+        f"Skills: {', '.join(selected_skills) if selected_skills else 'None'}",
+        styles["Normal"]
+    ))
+
+    # =========================
+    # ALTERNATIVE CAREERS
+    # =========================
+    if alt_df is not None and not alt_df.empty:
+
+        content.append(Spacer(1, 15))
+        content.append(
+            Paragraph("Alternative Career Matches", styles["Heading2"])
+        )
+
+        for _, row in alt_df.iterrows():
+            content.append(
+                Paragraph(
+                    f"{row['Career']} : {row['Match %']}%",
+                    styles["Normal"]
+                )
+            )
+
+    # =========================
+    # TOP FACTORS
+    # =========================
+    if top_factors_df is not None and not top_factors_df.empty:
+
+        content.append(Spacer(1, 15))
+        content.append(
+            Paragraph("Top Influencing Factors", styles["Heading2"])
+        )
+
+        for _, row in top_factors_df.iterrows():
+
+            content.append(
+                Paragraph(
+                    f"{row['Feature']} ({row['Influence']}) : {row['SHAP Value']:.4f}",
+                    styles["Normal"]
+                )
+            )
+
+    # =========================
+    # BACKGROUND SHAP VALUES
+    # =========================
+    if bg_df is not None and not bg_df.empty:
+
+        content.append(Spacer(1, 15))
+        content.append(
+            Paragraph("Impact of Background", styles["Heading2"])
+        )
+
+        for _, row in bg_df.iterrows():
+
+            content.append(
+                Paragraph(
+                    f"{row['Feature']} : {row['SHAP Value']:.4f}",
+                    styles["Normal"]
+                )
+            )
+
+   
+
+    doc.build(content)
+
+    buffer.seek(0)
+
+    return buffer
 
 def main():
     st.title("Career Recommendation System")
-    st.caption("One-page UI for your hybrid model (RIASEC + Education datasets) with SHAP explainability.")
+    st.markdown("""
+        <p style="font-size:18px;">
+        Get personalized career recommendations based on your interests, personality, and educational background, powered by machine learning and explainable AI.
+        Explore suitable career paths, understand the factors behind each recommendation, and make informed decisions for your future with confidence.
+        </p>
+            """, unsafe_allow_html=True)
 
     try:
         bundle = load_bundle(BUNDLE_PATH)
@@ -351,6 +515,33 @@ def main():
         m2.metric("Suitability Score", f"{suitability:.2f}%")
         m3.metric("Success Probability", f"{success_prob:.2f}%")
 
+
+        alt_df = None
+        top_factors_df = None
+        bg_df = None
+        graph_path = None
+
+        user_inputs = {
+            "Math Score": math_score,
+            "Science Score": science_score,
+            "Programming Skill": programming_skill,
+            "Communication Skill": communication_skill,
+            "Logical Ability": logical_ability,
+            "R Score": r_score,
+            "I Score": i_score,
+            "A Score": a_score,
+            "S Score": s_score,
+            "E Score": e_score,
+            "C Score": c_score,
+            "Education Level": education_level,
+            "Specialization": specialization,
+            "Certifications": certifications,
+            "CGPA/Percentage": cgpa,
+            "Skills": selected_skills
+        }
+
+      
+
         if include_alt:
             st.markdown("### Alternative Career Matches")
             # Match notebook structure: show next 2 options after primary recommendation.
@@ -390,13 +581,14 @@ def main():
 
             target_bg_features = ["Education Level", "Specialization", "Certifications"]
             bg_indices = [feature_names.index(f) for f in target_bg_features if f in feature_names]
+           
             if bg_indices:
                 st.markdown("#### Impact of Background")
                 bg_labels = [feature_names[i] for i in bg_indices]
                 filtered_shap = this_class_shap[bg_indices]
                 bg_df = pd.DataFrame({"Feature": bg_labels, "SHAP Value": [float(v) for v in filtered_shap]})
                 bg_df = bg_df.sort_values("SHAP Value")
-
+                st.dataframe(bg_df) 
                 fig_bg, ax_bg = plt.subplots(figsize=(10, 4))
                 colors = ["forestgreen" if v > 0 else "crimson" for v in bg_df["SHAP Value"]]
                 ax_bg.barh(bg_df["Feature"], bg_df["SHAP Value"], color=colors)
@@ -404,10 +596,33 @@ def main():
                 ax_bg.axvline(x=0, color="black", linestyle="--")
                 ax_bg.set_xlabel("Contribution Strength (SHAP value)")
                 st.pyplot(fig_bg, clear_figure=True)
+                graph_buffer = BytesIO()
+                fig_bg.savefig(graph_buffer, format="png", bbox_inches="tight")
+                graph_buffer.seek(0)
+                plt.close(fig_bg)
 
-            # Force plot rendered as matplotlib figure for Streamlit.
-            # Removed to keep SHAP section focused on requested table + background graph only.
+        pdf_file = create_pdf_report(
+            top_career=top_career,
+            suitability=suitability,
+            success_prob=success_prob,
+            user_inputs=user_inputs,
+            education_level=education_level,
+            specialization=specialization,
+            certifications=certifications,
+            cgpa=cgpa,
+            selected_skills=selected_skills,
+            alt_df=alt_df,
+            top_factors_df=top_factors_df,
+            bg_df=bg_df,
+        )
 
+        st.download_button(
+                    label="Download PDF Report",
+                    data=pdf_file.getvalue(),
+                    file_name="Career_Report.pdf",
+                    mime="application/pdf",
+                    use_container_width=True
+                )
     except Exception as exc:
         st.error(f"Prediction failed: {exc}")
         st.code(
