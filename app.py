@@ -12,8 +12,8 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="Career Recommendation", page_icon="🎯", layout="wide")
 
 BUNDLE_PATH = Path("saved_models") / "career_streamlit_bundle.pkl"
-EDU_PATH = Path("career_dataset_large.xlsx")
-RIASEC_PATH = Path("career_data_extended.csv")
+EDU_PATH = Path("Dataset") / "career_dataset_large.xlsx"
+RIASEC_PATH = Path("Dataset") / "career_data_extended.csv"
 EDUCATION_BOOST_FACTOR = 5.0
 EDUCATION_PRIORITY_FEATURES = [
     "Education Level",
