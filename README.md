@@ -1,7 +1,5 @@
 # 🚀 Data-Driven Career Path Recommendation Analysis using Machine Learning and Explainable AI
 
-### A Hybrid Workforce Analytics and Explainable AI Based Career Recommendation System
-
 ![Python](https://img.shields.io/badge/Python-3.10+-blue)
 ![Machine Learning](https://img.shields.io/badge/Machine%20Learning-Random%20Forest-green)
 ![Explainable AI](https://img.shields.io/badge/XAI-SHAP-orange)
@@ -14,134 +12,7 @@
 
 **Data-Driven Career Path Recommendation Analysis** is an intelligent career guidance system that helps students and job seekers discover suitable career paths based on academic performance, educational background, technical skills, certifications, career interests, and RIASEC personality traits.
 
-The system evaluates multiple Machine Learning algorithms, including Random Forest, Logistic Regression, and Decision Tree classifiers. The best-performing model is further optimized and integrated with SHAP (SHapley Additive Explanations) to provide transparent and explainable career recommendations.
-
----
-
-## 🎯 Objectives
-
-* Analyze academic, skill-based, and personality-related data.
-* Predict suitable career paths using Machine Learning.
-* Provide explainable recommendations using SHAP.
-* Assist students and professionals in career planning.
-* Build an interactive dashboard using Streamlit.
-* Deploy the system on Streamlit Cloud.
-
----
-
-## 🏗️ System Architecture
-
-```text
-User Input
-     │
-     ▼
-Data Collection
-     │
-     ▼
-Data Preprocessing
-     │
-     ▼
-Feature Engineering
-     │
-     ▼
-Machine Learning Models
-     │
-     ▼
-Model Selection & Tuning
-     │
-     ▼
-SHAP Explainability
-     │
-     ▼
-Career Recommendation
-     │
-     ▼
-Streamlit Dashboard
-```
-
----
-
-## 🧠 Machine Learning Models
-
-### 📊 Model Comparison
-
-| Model                    | Accuracy |
-| ------------------------ | -------- |
-| Random Forest Classifier | 95.21%   |
-| Logistic Regression      | 95.21%   |
-| Decision Tree Classifier | 94.38%   |
-
-### 🚀 Hyperparameter Tuning
-
-| Model                    | Accuracy |
-| ------------------------ | -------- |
-| Random Forest (Baseline) | 95.21%   |
-| Random Forest (Tuned)    | 95.42%   |
-
-### 🏆 Final Model
-
-| Metric          | Value                          |
-| --------------- | ------------------------------ |
-| Final Algorithm | Tuned Random Forest Classifier |
-| Accuracy        | 95.42%                         |
-| Explainability  | SHAP                           |
-| Deployment      | Streamlit Cloud                |
-
-The optimized Random Forest model was selected for deployment due to its strong predictive performance, robustness, and interpretability.
-
----
-
-## 🤖 Explainable AI (XAI)
-
-This project integrates **SHAP (SHapley Additive Explanations)** to improve transparency and trust.
-
-### SHAP Helps Users Understand
-
-* Why a career was recommended
-* Which factors influenced the prediction
-* Feature importance rankings
-* Model decision-making process
-
----
-
-## 📊 Features Used
-
-### Academic Features
-
-* Mathematics Score
-* Science Score
-* Education Level
-* CGPA / Percentage
-
-### Personality Features (RIASEC)
-
-* Realistic (R)
-* Investigative (I)
-* Artistic (A)
-* Social (S)
-* Enterprising (E)
-* Conventional (C)
-
-### Skill Features
-
-* Technical Skills
-* Certifications
-* Specialization
-* Career Interests
-
----
-
-## 🛠️ Technology Stack
-
-* Python
-* Pandas
-* NumPy
-* Scikit-learn
-* SHAP
-* Matplotlib
-* Seaborn
-* Streamlit
-* Git & GitHub
+The system evaluates multiple Machine Learning algorithms including Random Forest, Logistic Regression, and Decision Tree classifiers. The best-performing model is optimized and integrated with SHAP (SHapley Additive Explanations) to provide transparent and explainable career recommendations.
 
 ---
 
@@ -151,6 +22,89 @@ https://career-recommendation-system-hcl.streamlit.app/
 
 ---
 
-## 📄 License
+## 📊 Datasets Used
 
-This project is developed for academic and educational purposes.
+- [Student Career Prediction (RIASEC Dataset)](https://www.kaggle.com/datasets/svenkateshkumar/student-career-prediction-using-riasec-dataset)
+- [Career Path Recommendations Dataset](https://www.kaggle.com/datasets/ahsanneural/career-path-recommendations-dataset)
+
+---
+
+## ⚙️ Features
+
+- ML-based career prediction (Random Forest)
+- RIASEC personality integration
+- Education + skills-based recommendation system
+- Explainable AI using SHAP
+- Interactive Streamlit web app
+
+---
+
+## 🧠 Tech Stack
+
+- **Language:** Python  
+- **Data Processing:** Pandas, NumPy  
+- **Machine Learning & XAI:** Scikit-learn, SHAP, Joblib  
+- **Frontend & Visualization:** Streamlit, Matplotlib  
+
+---
+
+## 📈 Model Performance
+
+- **Algorithm:** Random Forest Classifier  
+- **Accuracy:** 95.42%  
+- **Task:** Multi-class classification across 6+ career domains  
+
+---
+
+## 🏗️ System Architecture
+````markdown
+User Input
+   ↓
+Data Collection
+   ↓
+Data Preprocessing
+   ↓
+Feature Engineering
+   ↓
+Machine Learning Models
+   ↓
+Model Selection & Tuning
+   ↓
+SHAP Explainability
+   ↓
+Career Recommendation
+   ↓
+Streamlit Dashboard
+   ↓
+Final Output (Recommended Career Path + Explanation)
+````
+
+
+## 📁 Project Structure
+````markdow
+Career-recommendation-System/
+├── Dataset/               # Raw and processed datasets
+├── saved_models/          # Trained models (.pkl files)
+├── Career_Re.ipynb        # EDA, training, evaluation notebook
+├── app.py                 # Streamlit application
+├── requirements.txt       # Dependencies
+└── README.md              # Documentation
+````
+
+## ▶️ How to Run
+
+```bash
+git clone https://github.com/DivyanshuSingh-12/Career-recommendation-System.git
+
+cd Career-recommendation-System
+
+pip install -r requirements.txt
+
+streamlit run app.py
+```
+
+## 👨‍💻 Team Members
+- Divyanshu Singh – ML Engineer (Model Development, SHAP, EDA)
+- Dhruv Paliwal – Frontend & Deployment (Streamlit App)
+- Surbhi Singh – Data & Research Analyst
+
