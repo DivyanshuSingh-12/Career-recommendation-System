@@ -179,6 +179,7 @@ def randomize_form_state(stats, education_opts, specialization_opts, cert_opts, 
     st.session_state.e_score = float(random.randint(int(stats["E_score"][0]), int(stats["E_score"][1])))
     st.session_state.c_score = float(random.randint(int(stats["C_score"][0]), int(stats["C_score"][1])))
     st.session_state.cgpa = round(random.uniform(stats["CGPA/Percentage"][0], stats["CGPA/Percentage"][1]), 1)
+
     if education_opts:
         st.session_state.education_level = random.choice(education_opts)
     if specialization_opts:
@@ -459,26 +460,53 @@ def main():
 
         with c1:
             st.markdown("#### Psychometric & Ability")
-            math_score = st.number_input("Math_Score", min_value=stats["Math_Score"][0], max_value=stats["Math_Score"][1], step=1.0, key="math_score")
-            science_score = st.number_input("Science_Score", min_value=stats["Science_Score"][0], max_value=stats["Science_Score"][1], step=1.0, key="science_score")
+            math_score = st.number_input(
+                "Math Score",
+                min_value=0.0,
+                max_value=100.0,
+                step=1.0,
+                key="math_score"
+            )
+
+            science_score = st.number_input(
+                "Science Score",
+                min_value=0.0,
+                max_value=100.0,
+                step=1.0,
+                key="science_score"
+            )
             programming_skill = st.number_input(
-                "Programming_Skill", min_value=stats["Programming_Skill"][0], max_value=stats["Programming_Skill"][1], step=1.0, key="programming_skill"
+                "Programming Skill",
+                min_value=0.0,
+                max_value=5.0,
+                step=0.1,
+                key="programming_skill"
             )
+
             communication_skill = st.number_input(
-                "Communication_Skill", min_value=stats["Communication_Skill"][0], max_value=stats["Communication_Skill"][1], step=1.0, key="communication_skill"
+                "Communication Skill",
+                min_value=0.0,
+                max_value=5.0,
+                step=0.1,
+                key="communication_skill"
             )
+
             logical_ability = st.number_input(
-                "Logical_Ability", min_value=stats["Logical_Ability"][0], max_value=stats["Logical_Ability"][1], step=1.0, key="logical_ability"
+                "Logical Ability",
+                min_value=0.0,
+                max_value=5.0,
+                step=0.1,
+                key="logical_ability"
             )
 
         with c2:
             st.markdown("#### RIASEC Profile")
-            r_score = st.number_input("R_score", min_value=stats["R_score"][0], max_value=stats["R_score"][1], step=1.0, key="r_score")
-            i_score = st.number_input("I_score", min_value=stats["I_score"][0], max_value=stats["I_score"][1], step=1.0, key="i_score")
-            a_score = st.number_input("A_score", min_value=stats["A_score"][0], max_value=stats["A_score"][1], step=1.0, key="a_score")
-            s_score = st.number_input("S_score", min_value=stats["S_score"][0], max_value=stats["S_score"][1], step=1.0, key="s_score")
-            e_score = st.number_input("E_score", min_value=stats["E_score"][0], max_value=stats["E_score"][1], step=1.0, key="e_score")
-            c_score = st.number_input("C_score", min_value=stats["C_score"][0], max_value=stats["C_score"][1], step=1.0, key="c_score")
+            r_score = st.number_input("R Score", 0.0, 10.0, step=0.1, key="r_score")
+            i_score = st.number_input("I Score", 0.0, 10.0, step=0.1, key="i_score")
+            a_score = st.number_input("A Score", 0.0, 10.0, step=0.1, key="a_score")
+            s_score = st.number_input("S Score", 0.0, 10.0, step=0.1, key="s_score")
+            e_score = st.number_input("E Score", 0.0, 10.0, step=0.1, key="e_score")
+            c_score = st.number_input("C Score", 0.0, 10.0, step=0.1, key="c_score")
 
         with c3:
             st.markdown("#### Education & Skills")
@@ -498,11 +526,11 @@ def main():
                 key="certifications",
             )
             cgpa = st.number_input(
-                "CGPA/Percentage",
-                min_value=stats["CGPA/Percentage"][0],
-                max_value=stats["CGPA/Percentage"][1],
-                step=0.1,
-                key="cgpa",
+                "Percentage",
+                min_value=0.0,
+                max_value=100.0,
+                step=1.0,
+                key="cgpa"
             )
             selected_skills = st.multiselect("Skills", options=skill_opts, key="selected_skills")
             include_alt = st.checkbox("Show top 3 career matches", key="include_alt")
